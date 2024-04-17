@@ -62,13 +62,13 @@ class RTVTClient(object):
         answer = self.client.send_quest(quest)
 
         if answer.is_error():
-            return false, answer.error_code
+            return False, answer.error_code
         else:
             try:
                 successed = answer.want("successed")
                 return successed == True, 0
             except:
-                return false, 10001
+                return False, 10001
 
     def create_stream(self, srcLang, destLang, needAsrResult, needTempResult, needTransResult, srcAltLanguage = []):
         quest = Quest("voiceStart")
