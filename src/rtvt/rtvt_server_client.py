@@ -70,13 +70,16 @@ class RTVTClient(object):
             except:
                 return false, 10001
 
-    def create_stream(self, srcLang, destLang, needAsrResult, needTempResult, needTransResult):
+    def create_stream(self, srcLang, destLang, needAsrResult, needTempResult, needTransResult, srcAltLanguage = []):
         quest = Quest("voiceStart")
         quest.param("asrResult", needAsrResult)
         quest.param("asrTempResult", needTempResult)
         quest.param("transResult", needTransResult)
         quest.param("srcLanguage", srcLang)
         quest.param("destLanguage", destLang)
+
+        if len(srcAltLanguage) > 0:
+            quest.param("srcAltLanguage", srcAltLanguage)
 
         answer = self.client.send_quest(quest)
 
@@ -88,6 +91,17 @@ class RTVTClient(object):
                 return streamId, 0
             except:
                 return -1, 10001
+            
+    def close_stream(self, streamId):
+        quest = Quest("voiceEnd")
+        quest.param("streamId", streamId)
+
+        answer = self.client.send_quest(quest)
+
+        if answer.is_error():
+            return answer.error_code
+        else:
+            return 0
 
     def send_voice(self, streamId, seq, data):
         quest = Quest("voiceData")

@@ -39,7 +39,7 @@ if  __name__ == "__main__":
     client.set_quest_processor(ResultProcessor())
 
     pid = 81700001
-    key = 'xxxxxxx'
+    key = 'xxxxxxxxxxxx'
     ts = int(time.time())
 
     core_string = f"{pid}:{ts}"
@@ -86,10 +86,10 @@ if  __name__ == "__main__":
             
             time.sleep(0.02)
 
-
     print("识别完成")
     time.sleep(10)
     
+    client.close_stream(streamId)
     client.destory()
 
 

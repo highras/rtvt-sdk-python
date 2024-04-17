@@ -78,17 +78,21 @@ token = base64.b64encode(hmac_sha256).decode('utf-8')
 # 登录，当登录成功时，successed = True，errorCode = 0，失败时successed = False，errorCode为具体错误码
 successed, errorCode = client.login(token, ts)
 
-# 创建流，参数原型：create_stream(srcLang, destLang, needAsrResult, needTempResult, needTransResult)
+# 创建流，参数原型：create_stream(srcLang, destLang, needAsrResult, needTempResult, needTransResult, srcAltLanguage = [])
 # srcLang: 音频源语言
 # destLang: 翻译目标语言
 # needAsrResult: 是否需要识别最终结果
 # needTransResult: 是否需要翻译最终结果
 # needTempResult: 是否需要临时结果（识别与翻译）
+# srcAltLanguage: 音频候选语种（可选）
 streamId, errorCode = client.create_stream("zh", "en", True, True, True)
 
 # 发送音频流, streamId为create_stream返回的结果，seq为业务自己维护的自增id，data为二进制pcm数据片段
 # pcm片段要求为16000采样率 单声道 固定640字节
 errorCode = client.send_voice(streamId, seq, data)
+
+# 关闭流
+client.close_stream(streamId)
 
 # 销毁相关资源
 client.destory()
