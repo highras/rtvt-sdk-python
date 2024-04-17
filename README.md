@@ -94,6 +94,6 @@ errorCode = client.send_voice(streamId, seq, data)
 client.destory()
 ```
 
-## Usage
+## Demo
 
 [test/demo.py](test/demo.py)
