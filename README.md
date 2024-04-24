@@ -91,6 +91,9 @@ streamId, errorCode = client.create_stream("zh", "en", True, True, True)
 # pcm片段要求为16000采样率 单声道 固定640字节
 errorCode = client.send_voice(streamId, seq, data)
 
+# 异步方式不等待确认结果
+errorCode = client.send_voice_async(streamId, seq, data)
+
 # 关闭流
 client.close_stream(streamId)
 
