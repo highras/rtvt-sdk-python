@@ -94,6 +94,9 @@ errorCode = client.send_voice(streamId, seq, data)
 # 异步方式不等待确认结果
 errorCode = client.send_voice_async(streamId, seq, data)
 
+# 该接口不要求输入pcm片段是640字节，可传递变长音频数据
+client.send_voice_variable(streamId, data)
+
 # 关闭流
 client.close_stream(streamId)
 
