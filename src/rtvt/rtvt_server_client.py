@@ -117,6 +117,22 @@ class RTVTClient(object):
         else:
             return 0
 
+    def send_voice_async(self, streamId, seq, data):
+        quest = Quest("voiceData")
+        quest.param("streamId", streamId)
+        quest.param("seq", seq)
+        quest.param("data", data)
+        quest.param("ts", int(time.time() * 1000))
+
+        class MyCallback(QuestCallback):
+            def callback(self, answer):
+                pass
+
+        self.client.send_quest(quest, MyCallback())
+
+        return 0
+
+
 
 
 
