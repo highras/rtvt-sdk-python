@@ -79,8 +79,7 @@ if  __name__ == "__main__":
             if len(chunk) < chunk_size:
                 chunk += bytes(chunk_size - len(chunk))
 
-            errorCode = client.send_voice(streamId, seq, chunk)
-            #print(errorCode)
+            client.send_voice_async(streamId, seq, chunk)
             
             seq += 1
             
