@@ -4,6 +4,7 @@ import sys
 sys.path.append("..")
 import threading
 import hashlib
+from collections import deque
 from fpnn.tcp_client import *
 from fpnn.quest import *
 from .rtvt_quest_processor_internal import *
@@ -20,6 +21,9 @@ class RTVTClient(object):
         self.uid = uid
         self.require_close = False
         self.processor = None
+        self.stream_lock = threading.Lock()
+        self.stream_queue = {}
+        self.stream_seq_map = {}
 
     def set_quest_timeout(self, timeout):
         self.client.set_quest_timeout(timeout * 1000)
@@ -46,6 +50,9 @@ class RTVTClient(object):
     def destory(self):
         self.require_close = True
         self.stop = True
+        with self.stream_lock:
+            self.stream_queue.clear()
+            self.stream_seq_map.clear()
         self.client.destory()
 
     def set_connection_callback(self, callback):
@@ -88,10 +95,15 @@ class RTVTClient(object):
         else:
             try:
                 streamId = answer.want("streamId")
+
+                with self.stream_lock:
+                    self.stream_queue[streamId] = deque()
+                    self.stream_seq_map[streamId] = 1
+
                 return streamId, 0
             except:
                 return -1, 10001
-            
+
     def close_stream(self, streamId):
         quest = Quest("voiceEnd")
         quest.param("streamId", streamId)
@@ -101,6 +113,9 @@ class RTVTClient(object):
         if answer.is_error():
             return answer.error_code
         else:
+            with self.stream_lock:
+                del self.stream_queue[streamId]
+                del self.stream_seq_map[streamId]
             return 0
 
     def send_voice(self, streamId, seq, data):
@@ -132,9 +147,18 @@ class RTVTClient(object):
 
         return 0
 
-
-
-
-
-
+    def send_voice_variable(self, streamId, data):
+        if isinstance(data, (bytes, bytearray)):
+            with self.stream_lock:
+                if streamId in self.stream_queue:
+                    self.stream_queue[streamId].extend(data)
+                    sendLength = int(len(self.stream_queue[streamId]) / 640)
+                    if sendLength > 0:
+                        for i in range(sendLength):
+                            data = bytes([self.stream_queue[streamId].popleft() for _ in range(640)])
+                            self.send_voice_async(streamId, self.stream_seq_map[streamId], data)
+                            self.stream_seq_map[streamId] += 1
+            return 0
+        else:
+            raise ValueError("data must be bytes or bytearray.")
 
