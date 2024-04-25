@@ -25,7 +25,6 @@ class RTVTQuestProcessorInternal(QuestProcessor):
         try:
             self.processor.recognized_temp_result(quest.params_map)
         except:
-            print("xxxx")
             pass
     
     def translatedResult(self, connection, quest):
