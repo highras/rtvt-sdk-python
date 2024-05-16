@@ -4,7 +4,7 @@
 
 ## Depends
 
-* Python 3+
+* Python 3.5+
 * selectors
 * msgpack
 * cryptography
