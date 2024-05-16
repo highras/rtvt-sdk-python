@@ -9,3 +9,12 @@ class RTVTServerPushMonitor(object):
 
     def recognized_result(self, message):
         pass
+        
+    def recognized_temp_result(self, data):
+        pass
+    
+    def translated_result(self, data):
+        pass
+    
+    def translated_temp_result(self, data):
+        pass

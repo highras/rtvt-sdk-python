@@ -19,7 +19,7 @@ class RTVTQuestProcessorInternal(QuestProcessor):
             self.processor.recognized_result(quest.params_map)
         except:
             pass
-    
+
     def recognizedTempResult(self, connection, quest):
         connection.send_answer(Answer())
         try:

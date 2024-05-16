@@ -86,6 +86,7 @@ class ClientEngine(object):
         
         while self.running:
             with self.lock:
+
                 for s in all_socket:
                     if s in self.quit_socket_set:
                         continue
@@ -105,6 +106,7 @@ class ClientEngine(object):
                         )
 
             ready_socket_set = set()
+
             for key, mask in selector.select():
                 if key.fileobj == self.read_notify_fd:
                     self.consume_notify()
@@ -151,6 +153,7 @@ class ClientEngine(object):
                 connection.process_io(si.can_read, si.can_write)
 
     def join(self, connection):
+        print("in join")
         with self.lock:
             self.connection_map[connection.socket] = connection
             self.new_socket_set.add(connection.socket)

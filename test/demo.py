@@ -9,7 +9,7 @@ from Cryptodome.Hash import HMAC, SHA256
 
 if  __name__ == "__main__":
 
-    client = RTVTClient("rtvt-bj.ilivedata.com:14001", 81700001, 123456)
+    client = RTVTClient("rtvt.ilivedata.com:14001", 81700001, 123456)
 
     class MyConnectionCallback(ConnectionCallback):
         def connected(self, connection_id, endpoint, connected):
@@ -39,7 +39,7 @@ if  __name__ == "__main__":
     client.set_quest_processor(ResultProcessor())
 
     pid = 81700001
-    key = 'xxxxxxxxxxxx'
+    key = 'xxxxxxxxx'
     ts = int(time.time())
 
     core_string = f"{pid}:{ts}"
@@ -52,13 +52,14 @@ if  __name__ == "__main__":
     print(successed)
     print(errorCode)
 
+
     streamId, errorCode = client.create_stream("zh", "en", True, True, True)
 
     print(streamId)
     print(errorCode)
 
     # 设置每次读取的字节数
-    chunk_size = 640
+    chunk_size = 320
     # WAV文件头部大小，通常是44字节
     wav_header_size = 44
 
@@ -79,16 +80,17 @@ if  __name__ == "__main__":
             if len(chunk) < chunk_size:
                 chunk += bytes(chunk_size - len(chunk))
 
-            client.send_voice_async(streamId, seq, chunk)
-            
+            client.send_voice_variable(streamId, chunk)
+
             seq += 1
             
-            time.sleep(0.02)
+            time.sleep(0.01)
 
     print("识别完成")
     time.sleep(10)
-    
+
     client.close_stream(streamId)
     client.destory()
+
 
 
