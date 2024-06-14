@@ -57,7 +57,8 @@ class RTVTClient(object):
     def reconnect(self):
         self.client.reconnect()
 
-    def destory(self):
+    def delay_destory(self):
+        time.sleep(1.5)
         self.require_close = True
         self.stop = True
         with self.stream_lock:
@@ -67,6 +68,9 @@ class RTVTClient(object):
             self.client.destory()
         else:
             self.client.close()
+
+    def destory(self):
+        threading.Thread(target=self.delay_destory).start()
 
     def set_connection_callback(self, callback):
         if sys.platform == 'win32':

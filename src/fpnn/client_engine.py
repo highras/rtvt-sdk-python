@@ -153,7 +153,6 @@ class ClientEngine(object):
                 connection.process_io(si.can_read, si.can_write)
 
     def join(self, connection):
-        print("in join")
         with self.lock:
             self.connection_map[connection.socket] = connection
             self.new_socket_set.add(connection.socket)
